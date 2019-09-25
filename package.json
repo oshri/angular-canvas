@@ -21,7 +21,10 @@
     "@angular/router": "~8.0.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "d3": "^5.9.2",
+    "ngx-take-until-destroy": "^5.4.0",
+    "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.0",
@@ -31,6 +34,7 @@
     "@types/node": "~8.9.4",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/d3": "^5.7.2",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
