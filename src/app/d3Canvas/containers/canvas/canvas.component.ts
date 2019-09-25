@@ -1,66 +1,79 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
-  ViewChild,
+  OnDestroy,
   OnInit,
-  OnChanges,
-  AfterViewInit,
-  SimpleChanges
-} from '@angular/core';
-import * as d3 from 'd3';
-import { SvgElement, INode } from '../../models';
-import { ColorsService } from '../../utils/colors/colors.service';
+  ViewChild
+} from "@angular/core";
+import * as d3 from "d3";
+import { INode } from "../../models";
+import { ColorsService } from "../../utils/colors/colors.service";
 // Link for working demo : https://bl.ocks.org/jodyphelan/5dc989637045a0f48418101423378fbd
 
 @Component({
-  selector: 'app-canvas',
-  templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.scss']
+  selector: "app-canvas",
+  templateUrl: "./canvas.component.html",
+  styleUrls: ["./canvas.component.scss"]
 })
-export class CanvasComponent implements OnInit, AfterViewInit {
-  containerEl: any;
-  canvasEl: any;
+export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
+  canvasEl: HTMLCanvasElement;
   canvasWidth: number;
   canvasHeight: number;
-  d3Transform: d3.ZoomTransform;
   canvas2d: CanvasRenderingContext2D;
-
+  transform: d3.ZoomTransform;
   data: INode[];
 
-  constructor(private colorsService: ColorsService) {
+  constructor(private colorsService: ColorsService) {}
 
-  }
-
-  @ViewChild('container', { read: ElementRef, static: true })
+  @ViewChild("container", { read: ElementRef, static: true })
   container: ElementRef;
 
-  ngOnInit(): void {
-    this.containerEl = d3.select(this.container.nativeElement);
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-      this.setSvgDimensions();
-      this.data = this.generateData();
-      this.createCanvas(this.canvasWidth, this.canvasHeight);
-    }
+    // Init transform with default values.
+    this.transform = d3.zoomIdentity;
+    this.setSvgDimensions();
+    this.data = this.generateData();
+    this.createCanvas(this.canvasWidth, this.canvasHeight);
+    this.enableZoom();
+  }
+
+  ngOnDestroy(): void {}
+
+  private enableZoom() {
+    d3.select(this.container.nativeElement).call(
+      d3.zoom().on("zoom", () => {
+        // Update this.transform value and update canvas
+        this.transform = d3.event.transform;
+        this.updateCanvas(this.canvas2d, this.data);
+      })
+    );
+  }
 
   private createCanvas(width: number, height: number): void {
-      this.canvasEl = d3.select(this.container.nativeElement)
-        .append('canvas')
-        .classed('mainCanvas', true)
-        .attr('width', width)
-        .attr('height', height)
-        .node();
+    this.canvasEl = d3
+      .select(this.container.nativeElement)
+      .append("canvas")
+      .classed("mainCanvas", true)
+      .attr("width", width)
+      .attr("height", height)
+      .node();
 
-      this.canvas2d = this.canvasEl.getContext('2d');
+    this.canvas2d = this.canvasEl.getContext("2d");
 
-      this.updateCanvas(this.canvas2d, this.data);
+    this.updateCanvas(this.canvas2d, this.data);
   }
 
   private updateCanvas(context: CanvasRenderingContext2D, data: INode[]) {
     context.save();
 
     context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+    // Set canvas translate and scale based on last this.transform value
+    context.translate(this.transform.x, this.transform.y);
+    context.scale(this.transform.k, this.transform.k);
 
     data.forEach((d: INode, i) => {
       context.beginPath();
@@ -88,7 +101,12 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     while (n < 20) {
       let point;
 
-      point = {id: n.toString(), label: `NodeNumber ${n}`, x: (n * space) * r, y: this.canvasHeight / 2};
+      point = {
+        id: n.toString(),
+        label: `NodeNumber ${n}`,
+        x: n * space * r,
+        y: this.canvasHeight / 2
+      };
 
       nodes.push(point);
       n++;
@@ -97,5 +115,4 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     console.log(nodes);
     return nodes;
   }
-
 }
