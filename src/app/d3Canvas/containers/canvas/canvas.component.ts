@@ -44,13 +44,19 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private enableZoom() {
     d3.select(this.container.nativeElement).call(
-      d3.zoom().on("zoom", () => {
+      d3.zoom()
+      .scaleExtent([1 / 10, 8])
+      .on("zoom", () => {
         // Update this.transform value and update canvas
         this.transform = d3.event.transform;
         this.updateCanvas(this.canvas2d, this.data);
       })
     );
   }
+
+  isIntersect(point: {x: number; y: number}, node: INode) {
+    return Math.sqrt((point.x - node.x) ** 2 + (point.y - node.y) ** 2) < 50;
+}
 
   private createCanvas(width: number, height: number): void {
     this.canvasEl = d3
@@ -62,6 +68,18 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
       .node();
 
     this.canvas2d = this.canvasEl.getContext("2d");
+    this.canvas2d.canvas.addEventListener('click', (e) => {
+      const pos = {
+          x: e.clientX,
+          y: e.clientY
+      };
+
+      this.data.forEach((node: INode) => {
+          if (this.isIntersect(pos, node)) {
+              alert('click on circle: ' + node.id);
+          }
+      });
+  });
 
     this.updateCanvas(this.canvas2d, this.data);
   }
