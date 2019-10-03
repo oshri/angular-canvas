@@ -19,12 +19,13 @@
     "@angular/platform-browser": "~8.0.0",
     "@angular/platform-browser-dynamic": "~8.0.0",
     "@angular/router": "~8.0.0",
+    "d3": "^5.9.2",
+    "konva": "^4.0.13",
+    "ngx-take-until-destroy": "^5.4.0",
+    "resize-observer-polyfill": "^1.5.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
-    "zone.js": "~0.9.1",
-    "d3": "^5.9.2",
-    "ngx-take-until-destroy": "^5.4.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.0",

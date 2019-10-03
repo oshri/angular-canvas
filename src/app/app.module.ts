@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { D3CanvasModule } from './d3Canvas';
+import { KonvaCanvasModule } from './konvaCanvas';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -9,7 +10,8 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    D3CanvasModule
+    D3CanvasModule,
+    KonvaCanvasModule
   ],
   providers: [],
   bootstrap: [AppComponent]
